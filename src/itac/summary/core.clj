@@ -32,15 +32,25 @@
   ;; of snippets, we adapt them to snippet's model here
   (letk [[sentences tokens] annotation]
     (->> (map (fn [sentence tokens]
-               {:sentence (:text sentence)
-                :tokens (mapv :token tokens)
-                :lemmas (mapv :lemma tokens)
-                :nes (mapv :ne tokens)
-                :pos (mapv :tag tokens)
-                :token-spans (mapv :span tokens)
-                :span (:span sentence)})
+                {:sentence (:text sentence)
+                 :index (:index sentence)
+                 :tokens (mapv :token tokens)
+                 :lemmas (mapv :lemma tokens)
+                 :nes (mapv :ne tokens)
+                 :pos (mapv :tag tokens)
+                 :token-spans (mapv :span tokens)
+                 :span (:span sentence)})
              sentences tokens)
         (mapv sentence-map->parts))))
+
+(defnk sentence-clusters
+  "returns a set of sentence clusters."
+  [coreferences]
+  (set (for [coref-chain (vals coreferences)
+             :let [sentence-clusters (set (map :sentence coref-chain))]
+             ;; no 1 element clusters
+             :when (> (count sentence-clusters) 1)]
+         sentence-clusters)))
 
 (defn annotate-text
   [text]

@@ -4,11 +4,8 @@
             [clojure.math.combinatorics :as combo]
             [clojure.java.io :as io]
             [itac.textrank.core :as textrank]
-
             [itac.summary.stream :as stream]
-            [itac.summary.core :as core]
-            [itac.summary.frequencies :as freqs]
-            [itac.summary.coref :as coref]))
+            [itac.summary.core :as core]))
 
 (def stopwords
   (set (line-seq (io/reader (io/resource "itac/summary/stopwords")))))
@@ -47,19 +44,15 @@
                   stream/mark
                   (stream/replace-markers stream/text-marker-replacements))))
 
-(defrecord TextRank [text system maps length graph corefs clusters textrank-iterations]
+(defrecord TextRank [text system maps length graph clusters textrank-iterations]
   core/SummarySystem
   (annotate [this]
     (let [annotation (core/annotate-text text)
-          sentence-maps (core/sentence-maps annotation)
-          corefs (:coreferences annotation)]
+          sentence-maps (core/sentence-maps annotation)]
       (assoc this
         :length   (count sentence-maps)
-        ;; Sätzen auch einen Index zuweisen
-        :maps     (map-indexed #(assoc %2 :index %1)
-                               sentence-maps) 
-        :corefs   corefs 
-        :clusters (coref/sentence-clusters corefs))))
+        :maps     sentence-maps 
+        :clusters (core/sentence-clusters annotation))))
 
   (simplify [this]
     (let [n            (core/summary-length this)
@@ -87,7 +80,7 @@
     (let [n         (core/summary-length this)
           sentences (->> (sort-by :rank maps)
                          reverse
-                         (take n)
+                         (take n)                         
                          ;; Die Satzreihenfolge soll so sein,
                          ;; wie sie auch im Originaltext war.
                          (sort-by :index)
@@ -116,7 +109,6 @@
                      system)
     :maps     nil
     :graph    nil
-    :corefs   nil
     :clusters nil
     :ranked   nil}))
 
