@@ -132,20 +132,8 @@
 
 (defmethod visualize :default
   [system step]
-  (let [data-view (text :id :data-view :multi-line? true :wrap-lines? true :text "")
-        tabs      [{:title   "Inspector"
-                    :content (scrollable (tree :model (inspector/tree-model system)))}
-                   {:title "Data view"
-                    :content (scrollable data-view)}]
-        tab-panel (tabbed-panel :tabs (if (= step :end)
-                                        (into (result-view system) tabs)
-                                        tabs))]
-
-    ;; This fills the data view only when its tab is selected
-    (listen tab-panel :change
-            (fn [e]
-              (let [comp (.getSelectedComponent tab-panel)]
-                (when (and (select comp [:#data-view])
-                         (empty? (config data-view :text)))
-                  (config! data-view :text (with-out-str (pprint/pprint system)))))))
-    tab-panel))
+  (let [tabs [{:title   "Inspector"
+               :content (scrollable (tree :model (inspector/tree-model system)))}]]
+    (tabbed-panel :tabs (if (= step :end)
+                          (into (result-view system) tabs)
+                          tabs))))
