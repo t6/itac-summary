@@ -2,9 +2,9 @@
   (:require [clojure.string :as str]))
 
 (defn- primitive-markers
-  [sentence]
   "Takes a parsed sentence, removes some CoreNLP oddities and annotates it
-   for correctly rebuilding it to a string."
+  for correctly rebuilding it to a string."
+  [sentence]
   (for [{:keys [token ne pos]} sentence]
     {:token token
      :ne ne
@@ -44,11 +44,11 @@
      (if (= :null ne) :token-end)]))
 
 (defn- stream-markers
-  [annotated-sentence]
   "Takes a seq of primitive-annotate'd sentences and creates a stream of markers.
-   The markers are placed at the beginning of important sentence parts. :space markers
-   (indicating white space) are inserted where needed. The stream may contain nil entries,
-   which will be ignored."
+  The markers are placed at the beginning of important sentence parts. :space markers
+  (indicating white space) are inserted where needed. The stream may contain nil entries,
+  which will be ignored."
+  [annotated-sentence]
   (first
    (reduce (fn [[acc prev-action prev-ne prev-token prev-pos]
                {:keys [token ne pos action] :as m}]
@@ -141,16 +141,17 @@
                              (:token %))})
 
 (defn- arg-count
-  [f]
   "Returns the arity of f"
+  [f]
   ;; Thank you StackOverflow: http://stackoverflow.com/a/1813967
   (let [m (first (.getDeclaredMethods (class f)))
         p (.getParameterTypes m)]
     (alength p)))
 
 (defn replace-markers
+  "Replace the markers `xs` from the marker stream using the given
+  replacement map `actions`."
   [actions xs]
-  "Replace the markers `xs` from the marker stream using the given replacement map `actions`."
   (str/join
    ""
    (map (fn [x]
