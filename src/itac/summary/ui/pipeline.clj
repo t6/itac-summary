@@ -222,8 +222,8 @@
 	   initial-state      {:current    :start
 			       :text       text
 			       :inspector  (canvas
-					    :background :white
-					    :paint      (partial draw-logo "itac/summary/icons/logo.png"))
+                                            ;; :paint (partial draw-logo "...")
+					    :background :white)
 			       :next-steps steps
 			       :steps      steps
 			       :system     nil}
