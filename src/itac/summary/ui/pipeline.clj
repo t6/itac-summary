@@ -11,11 +11,7 @@
             itac.summary.textrank
             itac.summary.ui.textrank
             itac.summary.baseline
-            itac.summary.frequencies
-            itac.summary.select
-            itac.summary.smmry-com
-
-            :reload)
+            itac.summary.frequencies)
 
   (:use itac.summary.ui.utils
         seesaw.core

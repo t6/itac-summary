@@ -1,12 +1,10 @@
 (ns itac.summary.frequencies
-  (:require [clojure.pprint :as pprint]
-            [clojure.walk :as walk]
-            [itac.summary.core :as core]))
+  (:require [itac.summary.core :as core]))
 
 (defrecord Frequencies [text system maps simplified-maps]
   core/SummarySystem
   (annotate [this]
-    (assoc this :maps (core/sentence-maps text)))
+    (assoc this :maps (core/sentence-maps (core/annotate-text text))))
   
   (simplify [this]
     (letfn [(filter-pos [f sentence-map]

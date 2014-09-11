@@ -3,7 +3,6 @@
             [clojure.string :as str]
             [clojure.math.combinatorics :as combo]
             [clojure.java.io :as io]
-            [itac.rouge :as rouge]
             [itac.textrank.core :as textrank]
 
             [itac.summary.stream :as stream]
@@ -12,8 +11,7 @@
             [itac.summary.coref :as coref]))
 
 (def stopwords
-  (set/union (set (line-seq (io/reader (io/resource "itac/rouge/rouge-1.5.5/data/smart_common_words.txt"))))
-             (set (line-seq (io/reader (io/resource "itac/summary/stopwords"))))))
+  (set (line-seq (io/reader (io/resource "itac/summary/stopwords")))))
 
 (defmulti sentence-similarity
   (fn [x _ _] (get-in x [:system :sentence-similarity])))
@@ -52,8 +50,9 @@
 (defrecord TextRank [text system maps length graph corefs clusters textrank-iterations]
   core/SummarySystem
   (annotate [this]
-    (let [sentence-maps (core/sentence-maps text)
-          corefs        (coref/get-coreferences text)]
+    (let [annotation (core/annotate-text text)
+          sentence-maps (core/sentence-maps annotation)
+          corefs (:coreferences annotation)]
       (assoc this
         :length   (count sentence-maps)
         ;; Sätzen auch einen Index zuweisen
@@ -134,15 +133,6 @@
         similarity (/ (count tokens)
                       normal)]
     similarity))
-
-(defmethod sentence-similarity :rouge
-  [_ {sent-1 :sentence} {sent-2 :sentence}]
-  (let [result (rouge/rouge [{:peer-summary    [sent-2]
-                              :model-summaries [{:summary [sent-1]}]}]
-                            {:no-rouge-l       false
-                             :stemming         true
-                             :remove-stopwords true})]
-    (:f-measure (first result))))
 
 (defmethod build-graph :paper
   [{:keys [maps text system] :as this}]

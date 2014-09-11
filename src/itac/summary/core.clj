@@ -1,16 +1,19 @@
 (ns itac.summary.core
-  (:require [clojure.walk :as walk]
-            [itac.service.client :as service]))
+  (:require [plumbing.core :refer (letk defnk)]
+            [clojure.string :as str]
+            [t6.snippets.core :as snippets]
+            [t6.snippets.nlp :as nlp]
+            t6.snippets.nlp.corenlp))
+
+(def pipeline (nlp/pipeline {:type :corenlp}))
 
 (defn print-lines [coll]
   (dorun (map-indexed (fn [i x] (println (str (inc i) \. " " x))) coll)))
  
-(defn- sentence-map->parts
-  [sentence-map]
-  (let [sentence-map                    (walk/keywordize-keys sentence-map)
-        {:keys [tokens lemmas nes pos]} sentence-map
-        nes                             (map #(keyword (.toLowerCase (.name %))) nes)
-        pos                             (map #(keyword (.toLowerCase (.name %))) pos)]
+(defnk sentence-map->parts
+  [tokens lemmas nes pos :as sentence-map]
+  (let [nes (map (comp keyword str/lower-case) nes)
+        pos (map (comp keyword str/lower-case) pos)]
     (merge sentence-map
            {:nes            nes
             :pos            pos
@@ -24,8 +27,24 @@
                   tokens lemmas nes pos))})))
 
 (defn sentence-maps
+  [annotation]
+  ;; sentence maps were the predecessor of the token and sentences maps
+  ;; of snippets, we adapt them to snippet's model here
+  (letk [[sentences tokens] annotation]
+    (->> (map (fn [sentence tokens]
+               {:sentence (:text sentence)
+                :tokens (mapv :token tokens)
+                :lemmas (mapv :lemma tokens)
+                :nes (mapv :ne tokens)
+                :pos (mapv :tag tokens)
+                :token-spans (mapv :span tokens)
+                :span (:span sentence)})
+             sentences tokens)
+        (mapv sentence-map->parts))))
+
+(defn annotate-text
   [text]
-  (vec (map sentence-map->parts (service/sentence-maps text))))
+  (snippets/create {:pipeline pipeline :text text}))
 
 (defprotocol SummarySystem
   (annotate [this])
@@ -38,15 +57,7 @@
   (sentences [this])
   
   ;; Return a seq of the sentence parts that make up the summary
-  (sentence-parts [this])
-  
-  ;; Return a seq with pairs [sentence temperature]
-  ;; make sure that the "hottest" sentence (with the hottest
-  ;; temperature) is also the most important sentence.
-  ;; Note that this should NOT be ordered by temperature. The sentence
-  ;; ordering is most likely different than that which is implied by sentence
-  ;; importance.
-  (heatmap [this]))
+  (sentence-parts [this]))
 
 (defmulti construct :system)
 
@@ -69,8 +80,3 @@
           simplify
           rank
           reconstruct))
-
-(defn -main
-  "I don't do a whole lot."
-  [& args]
-  (println "Hello, World!"))

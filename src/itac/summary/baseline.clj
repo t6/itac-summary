@@ -1,11 +1,10 @@
 (ns itac.summary.baseline
-  (:require [clojure.walk :as walk]
-            [itac.summary.core :as core]))
+  (:require [itac.summary.core :as core]))
 
 (defrecord Baseline [text system maps]
   core/SummarySystem
   (annotate [this]
-    (assoc this :maps (core/sentence-maps text)))
+    (assoc this :maps (core/sentence-maps (core/annotate-text text))))
   
   (simplify [this] this)
   

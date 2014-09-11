@@ -8,13 +8,14 @@
         seesaw.mig)
   (:import [com.gravity.goose
             Configuration
-            Goose]
-           itac.scraper.Scraper))
+            Goose]))
 
 (defrecord Article [title url text])
 
 (def feeds
-  (into {} (map vec (partition 2 Scraper/feeds))))
+  {"BBC News" "http://feeds.bbci.co.uk/news/rss.xml"
+   "CBBC Newsround" "http://www.bbc.co.uk/newsround/news/rss.xml"
+   "CNN" "http://rss.cnn.com/rss/edition.rss"})
 
 (defn- load-xml-resource [url]
   (html/xml-resource (java.net.URL. url)))
@@ -75,7 +76,7 @@
                              :enabled? false)
         cur-future   (atom nil)
         source-sel   (combobox :model (into [{:title "(no source selected)"}]
-                                            (for [[title feed] (map vec (partition 2 Scraper/feeds))]
+                                            (for [[title feed] (map vec (partition 2 feeds))]
                                               {:title title
                                                :feed  feed}))
                                :renderer (string-renderer :title))

@@ -19,7 +19,7 @@
                  [net.sourceforge.nekohtml/nekohtml "1.9.21"]
                  [enlive "1.1.5" :exclusions [org.clojure/clojure]]
                  [hiccup "1.0.5"]
-                 [seesaw "1.4.4" :exclusions [org.clojure/clojure]]
+                 [seesaw "1.4.3" :exclusions [org.clojure/clojure]]
 
                  [clj-http "1.0.0"]
 

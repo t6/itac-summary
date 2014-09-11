@@ -116,10 +116,9 @@
         vertex-table          (seesaw.core/table)
         edge-table            (seesaw.core/table
                                ;; Edge weights don't change...
-                               :model (apply seesaw.table/table-model
-                                             (graph-map->edge-table-model
-                                              vertex->num
-                                              (first textrank-vec))))
+                               :model (graph-map->edge-table-model
+                                       vertex->num
+                                       (first textrank-vec)))
         _                     (.setRowSorter edge-table
                                              (TableRowSorter. (.getModel edge-table)))
         _                     (doto (.getColumnModel edge-table)
