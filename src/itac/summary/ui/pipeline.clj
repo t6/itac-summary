@@ -4,7 +4,6 @@
 	    [clojure.string :as str]
 	    [clojure.set :as set]
 	    [itac.summary.core :as core]
-	    [itac.summary.eval :as eval]
 	    [itac.summary.ui.core :as ui]
 	    [itac.scraper.core :as scraper]
 	    itac.summary.textrank
@@ -18,6 +17,28 @@
 	seesaw.mig
 	seesaw.chooser
 	seesaw.graphics))
+
+(def system-definitions
+  [[:textrank-ne-cluster {:system              :textrank
+			  :graph-builder       :paper
+			  :sentence-similarity :ne-cluster-intersection
+			  :description         "TextRank + Named Entities + Coreferences"}]
+
+   [:textrank            {:system              :textrank
+			  :graph-builder       :paper
+			  :sentence-similarity :token-intersection
+			  :description         "TextRank"}]
+
+   [:textrank-ne         {:system              :textrank
+			  :graph-builder       :paper
+			  :sentence-similarity :ne-intersection
+			  :description         "TextRank + Named Entities"}]
+
+   [:baseline            {:system      :baseline
+			  :description "Baseline: take first n sentences"}]
+
+   [:frequencies         {:system      :frequencies
+			  :description "Lemma frequencies"}]])
 
 (defn- string-renderer
   "See https://github.com/daveray/seesaw/issues/8"
@@ -381,6 +402,7 @@
 		    :items [[pipeline-canvas "grow"]
 			    [text-and-inspector "grow"]]))))))
 
+
 (defn pipeline-frame
   ([system-definitions] (pipeline-frame system-definitions ""))
   ([system-definitions text]
@@ -389,7 +411,7 @@
 
 (defn -main
   ([]
-     (config! (pipeline-frame eval/system-definitions) :on-close :exit)
+     (config! (pipeline-frame system-definitions) :on-close :exit)
      nil)
   ([args]
      (-main)))
