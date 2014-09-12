@@ -12,8 +12,12 @@
  
 (defnk sentence-map->parts
   [tokens lemmas nes pos :as sentence-map]
-  (let [nes (map (comp keyword str/lower-case) nes)
-        pos (map (comp keyword str/lower-case) pos)]
+  (let [nes (map (comp #(if (= % :o) :null %)
+		       keyword
+		       str/lower-case) nes)
+	pos (map (comp keyword
+		       #(if (#{":" "." "," "!" "?"} %1) "point" %1)
+		       str/lower-case) pos)]
     (merge sentence-map
            {:nes            nes
             :pos            pos
