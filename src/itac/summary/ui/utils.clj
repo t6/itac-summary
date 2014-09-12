@@ -26,7 +26,7 @@
             rect   (.getStringBounds fm s g2d)
             text-w (.getWidth rect)
             text-h (.getHeight rect)
-            
+
             x      (float x)
             y      (float y)]
         (.drawString g2d s x y)))))
@@ -43,7 +43,7 @@
                 rect   (.getStringBounds fm s g2d)
                 text-w (.getWidth rect)
                 text-h (.getHeight rect)
-                
+
                 x      (float (+ x (/ (- w text-w) 2)))
                 y      (float (+ y (/ (- h text-h) 2) (.getAscent fm)))]
             (.drawString g2d s x y)))))
@@ -82,4 +82,3 @@
                              [(- len size) (- size)]
                              [(- len size) size]
                              [len 0]) style))))))
-

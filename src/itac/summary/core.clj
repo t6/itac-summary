@@ -8,16 +8,16 @@
 (def pipeline (nlp/pipeline {:type :corenlp}))
 
 (defn print-lines [coll]
-  (dorun (map-indexed (fn [i x] (println (str (inc i) \. " " x))) coll)))
- 
+  (dorun (map-indexed (fn [i x] (println (format "%s. %s" (inc i) x))) coll)))
+
 (defnk sentence-map->parts
   [tokens lemmas nes pos :as sentence-map]
   (let [nes (map (comp #(if (= % :o) :null %)
-		       keyword
-		       str/lower-case) nes)
-	pos (map (comp keyword
-		       #(if (#{":" "." "," "!" "?"} %1) "point" %1)
-		       str/lower-case) pos)]
+                       keyword
+                       str/lower-case) nes)
+        pos (map (comp keyword
+                       #(if (#{":" "." "," "!" "?"} %1) "point" %1)
+                       str/lower-case) pos)]
     (merge sentence-map
            {:nes            nes
             :pos            pos
@@ -69,7 +69,7 @@
 (defprotocol SummaryOutput
   ;; Return a seq of sentences that make up the summary.
   (sentences [this])
-  
+
   ;; Return a seq of the sentence parts that make up the summary
   (sentence-parts [this]))
 

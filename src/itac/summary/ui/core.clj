@@ -10,8 +10,8 @@
   (:use seesaw.core
         [hiccup.util :only [escape-html url-encode]])
   (:import javax.swing.JTextPane
-           javax.swing.event.HyperlinkListener 
-           javax.swing.event.HyperlinkEvent 
+           javax.swing.event.HyperlinkListener
+           javax.swing.event.HyperlinkEvent
            javax.swing.event.HyperlinkEvent$EventType
            javax.swing.text.html.StyleSheet
            ))
@@ -35,21 +35,20 @@
     (.addHyperlinkListener listener)
     (.setText html)))
 
-(def ^:private
-  html-marker-replacements
+(def html-marker-replacements
   ;; A map of replacements for the markers from marker-stream
   ;; Values maybe functions or strings. Special case: The value of
   ;; :token may be a function that takes zero or one arguments. :token
   ;; is the actual sentence part and a map containing :ne, :pos,
   ;; :prev-ne, :prev-pos :prev-token, :token
   {:space                 " "
-   
+
    :ne-begin-person       "<span style='color: #859900;'><a href='#ne-person'>"
    :ne-end-person         "</a></span>"
-   
+
    :ne-begin-location     "<span style='color: #dc322f;'><a href='#ne-location'>"
    :ne-end-location       "</a></span>"
-   
+
    :ne-begin-organization "<span style='color: #1199ff;'><a href='#ne-orga'>"
    :ne-end-organization   "</a></span>"
 
@@ -58,7 +57,7 @@
 
    :ne-begin-money        "<span style='color: #6c71c4;'><a href='#ne-money'>"
    :ne-end-money          "</a></span>"
-   
+
    :ne-begin-percent      "<span style='color: #2aa198;'><a href='#ne-percent'>"
    :ne-end-percent        "</a></span>"
 
@@ -70,16 +69,16 @@
 
    :ne-begin-null         "<b>:null NamedEntity should not exist here!</b>"
    :ne-end-null           ""
-   
+
    :quote-begin           (escape-html "\"")
    :quote-end             (escape-html "\"")
-   
+
    :single-quote-begin    (escape-html "'")
    :single-quote-end      (escape-html "'")
 
    :rb-begin              "("
    :rb-end                ")"
-   
+
    :token-begin           "<span class='token'>"
    :token-end             "</span>"
    :token                 #(if-not (= (:action %) :skip)

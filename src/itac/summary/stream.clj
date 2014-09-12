@@ -1,7 +1,7 @@
 (ns itac.summary.stream
   (:require [clojure.string :as str]))
 
-(defn- primitive-markers
+(defn primitive-markers
   "Takes a parsed sentence, removes some CoreNLP oddities and annotates it
   for correctly rebuilding it to a string."
   [sentence]
@@ -22,8 +22,7 @@
               (= pos :point)                      :concat-next
               :else                               :null)}))
 
-(defn-
-  tag-token
+(defn- tag-token
   [prev-ne ne prev-pos pos prev-token m & [action]]
   (let [ne-begin (keyword (str "ne-begin-" (name ne)))
         ne-end   (keyword (str "ne-end-" (name prev-ne)))
@@ -64,12 +63,12 @@
                                              (if (empty? acc)
                                                [:single-quote-begin]
                                                [:space :single-quote-begin]))
-                   
+
                    :quote-end          (into (tag m :skip)
                                              [:quote-end :space])
                    :single-quote-end   (into (tag m :skip)
                                              [:single-quote-end :space])
-                   
+
                    :rb-begin           (into (tag m :skip)
                                              (if (empty? acc)
                                                [:rb-begin]
@@ -98,13 +97,13 @@
   ;; is the actual sentence part and a map containing :ne, :pos,
   ;; :prev-ne, :prev-pos :prev-token, :token
   {:space                 " "
-   
+
    :ne-begin-person       ""
    :ne-end-person         ""
-   
+
    :ne-begin-location     ""
    :ne-end-location       ""
-   
+
    :ne-begin-organization ""
    :ne-end-organization   ""
 
@@ -113,7 +112,7 @@
 
    :ne-begin-money        ""
    :ne-end-money          ""
-   
+
    :ne-begin-percent      ""
    :ne-end-percent        ""
 
@@ -125,16 +124,16 @@
 
    :ne-begin-null         ""
    :ne-end-null           ""
-   
+
    :quote-begin           "\""
    :quote-end             "\""
-   
+
    :single-quote-begin    "'"
    :single-quote-end      "'"
 
    :rb-begin              "("
    :rb-end                ")"
-   
+
    :token-begin           ""
    :token-end             ""
    :token                 #(if-not (= (:action %) :skip)

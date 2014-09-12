@@ -5,9 +5,9 @@
   core/SummarySystem
   (annotate [this]
     (assoc this :maps (core/sentence-maps (core/annotate-text text))))
-  
+
   (simplify [this] this)
-  
+
   (rank [this]
     (assoc this
       :maps (map-indexed

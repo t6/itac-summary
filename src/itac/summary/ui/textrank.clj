@@ -9,4 +9,4 @@
   (tabbed-panel :tabs [{:title   "Inspector"
                         :content (scrollable (tree :model (inspector/tree-model system)))}
                        {:title "TextRank"
-                        :content (textrank-ui/visualize (:textrank-iterations system))}])) 
+                        :content (textrank-ui/visualize (:textrank-iterations system))}]))
