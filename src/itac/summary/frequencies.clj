@@ -4,7 +4,7 @@
 (defrecord Frequencies [text system maps simplified-maps]
   core/SummarySystem
   (annotate [this]
-    (assoc this :maps (core/sentence-maps (core/annotate-text text))))
+    (assoc this :maps (:sentence-maps (core/annotate-text text))))
 
   (simplify [this]
     (letfn [(filter-pos [f sentence-map]

@@ -5,7 +5,7 @@
             [t6.snippets.nlp :as nlp]
             t6.snippets.nlp.corenlp))
 
-(def pipeline (nlp/pipeline {:type :corenlp}))
+(def pipeline (delay (nlp/pipeline {:type :corenlp})))
 
 (defn print-lines [coll]
   (dorun (map-indexed (fn [i x] (println (format "%s. %s" (inc i) x))) coll)))
@@ -30,22 +30,21 @@
                      :pos   pos-tag})
                   tokens lemmas nes pos))})))
 
-(defn sentence-maps
-  [annotation]
+(defnk sentence-maps
+  [sentences tokens]
   ;; sentence maps were the predecessor of the token and sentences maps
   ;; of snippets, we adapt them to snippet's model here
-  (letk [[sentences tokens] annotation]
-    (->> (map (fn [sentence tokens]
-                {:sentence (:text sentence)
-                 :index (:index sentence)
-                 :tokens (mapv :token tokens)
-                 :lemmas (mapv :lemma tokens)
-                 :nes (mapv :ne tokens)
-                 :pos (mapv :tag tokens)
-                 :token-spans (mapv :span tokens)
-                 :span (:span sentence)})
-             sentences tokens)
-        (mapv sentence-map->parts))))
+  (->> (map (fn [sentence tokens]
+              {:sentence (:text sentence)
+               :index (:index sentence)
+               :tokens (mapv :token tokens)
+               :lemmas (mapv :lemma tokens)
+               :nes (mapv :ne tokens)
+               :pos (mapv :tag tokens)
+               :token-spans (mapv :span tokens)
+               :span (:span sentence)})
+            sentences tokens)
+       (mapv sentence-map->parts)))
 
 (defnk sentence-clusters
   "returns a set of sentence clusters."
@@ -58,7 +57,9 @@
 
 (defn annotate-text
   [text]
-  (snippets/create {:pipeline pipeline :text text}))
+  (snippets/create {:sentence-clusters sentence-clusters
+                    :sentence-maps sentence-maps}
+                   {:pipeline @pipeline :text text}))
 
 (defprotocol SummarySystem
   (annotate [this])

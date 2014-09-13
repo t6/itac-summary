@@ -3,6 +3,7 @@
             [clojure.string :as str]
             [clojure.math.combinatorics :as combo]
             [clojure.java.io :as io]
+            [plumbing.core :refer (letk)]
             [itac.textrank.core :as textrank]
             [itac.summary.stream :as stream]
             [itac.summary.core :as core]))
@@ -47,12 +48,11 @@
 (defrecord TextRank [text system maps length graph clusters textrank-iterations]
   core/SummarySystem
   (annotate [this]
-    (let [annotation (core/annotate-text text)
-          sentence-maps (core/sentence-maps annotation)]
+    (letk [[sentence-maps sentence-clusters] (core/annotate-text text)]
       (assoc this
         :length   (count sentence-maps)
         :maps     sentence-maps
-        :clusters (core/sentence-clusters annotation))))
+        :clusters sentence-clusters)))
 
   (simplify [this]
     (let [n            (core/summary-length this)
