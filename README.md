@@ -6,7 +6,7 @@ This is the automatic summarizer from my undergraduate project, which
 I have updated to work with the [NLP library](https://github.com/t6/snippets) I developed for my bachelor
 report.
 
-[<img width="40%" src="https://raw.githubusercontent.com/t6/itac-summary/master/screenshot.png">](https://raw.githubusercontent.com/t6/itac-summary/master/screenshot.png)
+[<img width="100%" src="https://raw.githubusercontent.com/t6/itac-summary/master/screenshot.png">](https://raw.githubusercontent.com/t6/itac-summary/master/screenshot.png)
 
 Article shown in the screenshot is ['Child asthma drop since smoke ban'](http://www.bbc.co.uk/newsround/21116719)
 from the CBBC (checked 28.02.2015).
