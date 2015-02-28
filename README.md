@@ -11,6 +11,8 @@ report.
 Article shown in the screenshot is ['Child asthma drop since smoke ban'](http://www.bbc.co.uk/newsround/21116719)
 from the CBBC (checked 28.02.2015).
 
+Icons from the [Tango Desktop Project](http://tango.freedesktop.org/).
+
 ## Running the summarizer
 
 1. Install [Leiningen](https://github.com/technomancy/leiningen/)
