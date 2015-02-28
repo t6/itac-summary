@@ -14,7 +14,7 @@
 
 (def feeds
   {"BBC News" "http://feeds.bbci.co.uk/news/rss.xml"
-   "CBBC Newsround" "http://www.bbc.co.uk/newsround/news/rss.xml"
+   "CBBC Newsround" "http://www.bbc.co.uk/newsround/rss.xml"
    "CNN" "http://rss.cnn.com/rss/edition.rss"})
 
 (defn- load-xml-resource [url]
@@ -76,7 +76,7 @@
                              :enabled? false)
         cur-future   (atom nil)
         source-sel   (combobox :model (into [{:title "(no source selected)"}]
-                                            (for [[title feed] (map vec (partition 2 feeds))]
+                                            (for [[title feed] feeds]
                                               {:title title
                                                :feed  feed}))
                                :renderer (string-renderer :title))
@@ -90,7 +90,7 @@
                       :south (mig-panel :constraints ["fillx" "[grow][]" ""]
                                         :items [[use-btn "grow"]]))
         widgets      [refresh-btn use-btn source-sel articles-sel]]
-    
+
     (letfn [(fetch-clicked [e]
               (config! articles-sel :model [])
               (when-let [feed (:feed (selection source-sel))]
@@ -146,4 +146,3 @@
        (frame :content)
        pack!
        show!))
-

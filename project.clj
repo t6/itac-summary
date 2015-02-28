@@ -5,6 +5,8 @@
   :java-source-paths ["src-java"]
   :jvm-opts ["-XX:+CMSClassUnloadingEnabled"
              "-XX:PermSize=256m"
+             ;; Set initial heap space size to 1500 MB
+             "-Xms1500m"
              "-XX:MaxPermSize=256m"]
   :main itac.summary.ui.pipeline
   :dependencies [[org.clojure/clojure "1.6.0"]
